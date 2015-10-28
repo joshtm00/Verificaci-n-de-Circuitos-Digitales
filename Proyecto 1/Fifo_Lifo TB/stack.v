@@ -4,10 +4,10 @@ module Stack (
 	q,
 	d,
 	push,
-	pop,
+	pop
 );
 
-	parameter WIDTH = 11;
+	parameter WIDTH = 32;
 	parameter DEPTH = 7;
 
 	input                    clk;
@@ -18,7 +18,7 @@ module Stack (
 	input                    pop;
 
 	reg [DEPTH - 1:0] ptr;
-	reg [WIDTH - 1:0] stack [0:(1 << DEPTH) - 1];
+	reg [WIDTH - 1:0] stack [0:DEPTH - 1];
 
 	always @(posedge clk) begin
 		if (reset)
@@ -30,12 +30,14 @@ module Stack (
 	end
 
 	always @(posedge clk) begin
-		if (push || pop) begin
-			if(push)
-				stack[ptr] <= q;
-
+		if (push) begin
+			stack[ptr] <= d;
+		end
+		
+		if (pop) begin
 			q <= stack[ptr - 1];
 		end
+		
 	end
 
 endmodule

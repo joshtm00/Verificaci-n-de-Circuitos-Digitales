@@ -1,20 +1,26 @@
 `include "stack.v"
 
 
-module scoreboard_fifolifo # (parameter MODE=1, parameter DEPTH=64, parameter dat_width=32) (
+module scoreboard_fifolifo #(parameter MODE=1'b1, parameter dat_width=32, parameter L=6, parameter DEPTH=64) 
+(	input   [dat_width-1:0] Datain,
+	input   Wren,
+	input   Rden, 
+	input   Wrclk,   
+	input   Rdclk,   
+	input   Rst,
+	output  reg [dat_width-1:0] Dataout
+);   
+	wire [dat_width-1:0] StackOut;
+	
+	//In Stack Mode, the module Output is the stack output
+	always @(Wrclk) begin :Stack
+		if(MODE == 0)begin
+			Dataout <= StackOut;
+		end
+	end
 
-	input [dat_width-1:0] data_in,
-	input	 		      Wren;
-	input 			      Rden; 
-	input 			      Wrclk;   
-	input 		    	  Rdclk;   
-	input	 	          Rst;
-    output reg [dat_width-1:0]  DataOut;
-);
 
-
-
-	reg [dat_width:0] fifo_ram[0:DEPTH-1];
+/*	reg [dat_width:0] fifo_ram[0:DEPTH-1];
 	reg [5:0] rd_ptr, wr_ptr;
 
 
@@ -52,15 +58,19 @@ module scoreboard_fifolifo # (parameter MODE=1, parameter DEPTH=64, parameter da
 			  end 
 		end
 	end
-
-    Stack #( 
-        .WIDTH(dat_width)
+*/
+ 
+ 
+ //Stack Instantiation
+   Stack #( 
+        .WIDTH(dat_width),
         .DEPTH(DEPTH)
-    ) stack(
-            .CLK (clock),
+    ) 
+	 stack(
+         .clk (Wrclk),
         	.reset (Rst),
-        	.q (data_in),
-        	.d (DataOut),
+        	.q (StackOut),
+        	.d (Datain),
         	.push (Wren),
         	.pop (Rden)
     );
