@@ -1,4 +1,3 @@
-
 `include "DUT.v"
 `include "tb.v"
 `include "CLK1.v"
@@ -16,11 +15,15 @@ tb test (
 
 );
 
-clock #(10) Clk1 (.clock(clk1));
+clock #(10)  Clk1 (.clock(clk1));
 clock #(5) Clk2 (.clock(clk2));
 
 
-DUT #(0) dut (.Datain(datain), 
+DUT #(
+	.MODE(0),
+	.DEPTH(64)
+	
+) dut (.Datain(datain), 
 		.Dataout(datao), 
 		.Wren(wren), 
 		.Rden(rden), 
@@ -31,6 +34,21 @@ DUT #(0) dut (.Datain(datain),
 		.Rst(rst));
 
 
-
+/*
+scoreboard_fifolifo #( 
+	.MODE(0),
+	.dat_width(32), 
+	.DEPTH(64)
+	
+)Score(
+		.Datain(datain), 
+		.Dataout(datao), 
+		.Wren(wren), 
+		.Rden(rden), 
+		.Wrclk(clk2), 
+		.Rdclk(clk1),  
+		.Rst(rst)
+);   
+*/
 
 endmodule
